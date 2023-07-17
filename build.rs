@@ -42,6 +42,9 @@ fn generate_bindings(elec_redist_path: &std::path::Path) {
         .header(&header)
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .parse_callbacks(Box::new(LibElecCallbacks))
+        .default_enum_style(bindgen::EnumVariation::Rust {
+            non_exhaustive: false,
+        })
         .clang_args([
             format!("-I{}/include", acfutils_redist_path.display()),
             format!("-I{}/CHeaders/XPLM", xplane_sdk_path.display()),
@@ -66,7 +69,7 @@ fn get_target() -> Target {
         Target::MacOs
     } else if target == "windows" {
         Target::Windows
-    } else if target == "linux " {
+    } else if target == "linux" {
         Target::Linux
     } else {
         panic!("Unsupported target: {target}");
