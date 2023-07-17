@@ -40,6 +40,8 @@ fn generate_bindings(elec_redist_path: &std::path::Path) {
 
     bindgen::Builder::default()
         .header(&header)
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(LibElecCallbacks))
         .clang_args([
             format!("-I{}/include", acfutils_redist_path.display()),
             format!("-I{}/CHeaders/XPLM", xplane_sdk_path.display()),
@@ -77,5 +79,20 @@ fn get_xp_def() -> &'static str {
         Target::Windows => "IBM",
         Target::MacOs => "APL",
         Target::Linux => "LIN",
+    }
+}
+
+#[cfg(feature = "generate-bindings")]
+#[derive(Debug)]
+struct LibElecCallbacks;
+
+#[cfg(feature = "generate-bindings")]
+impl bindgen::callbacks::ParseCallbacks for LibElecCallbacks {
+    fn item_name(&self, original_item_name: &str) -> Option<String> {
+        if original_item_name.starts_with("libelec_") {
+            Some(original_item_name[8..].to_string())
+        } else {
+            None
+        }
     }
 }
