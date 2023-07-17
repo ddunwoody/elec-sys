@@ -40,11 +40,11 @@ fn generate_bindings(elec_redist_path: &std::path::Path) {
 
     bindgen::Builder::default()
         .header(&header)
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-        .parse_callbacks(Box::new(LibElecCallbacks))
         .default_enum_style(bindgen::EnumVariation::Rust {
             non_exhaustive: false,
         })
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(LibElecCallbacks))
         .clang_args([
             format!("-I{}/include", acfutils_redist_path.display()),
             format!("-I{}/CHeaders/XPLM", xplane_sdk_path.display()),
