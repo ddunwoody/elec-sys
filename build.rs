@@ -38,6 +38,11 @@ fn generate_bindings(elec_redist_path: &std::path::Path) {
     let header = format!("{}/include/libelec.h", elec_redist_path.display());
     println!("{header}");
 
+    #[cfg(target_os = "macos")]
+    let bindings = "src/bindings.rs";
+    #[cfg(not(target_os = "macos"))]
+    let bindings = "src/bindings-lin.rs";
+
     bindgen::Builder::default()
         .header(&header)
         .default_enum_style(bindgen::EnumVariation::Rust {
@@ -53,7 +58,7 @@ fn generate_bindings(elec_redist_path: &std::path::Path) {
         .allowlist_file(header)
         .generate()
         .expect("Unable to generate bindings")
-        .write_to_file("src/bindings.rs")
+        .write_to_file(bindings)
         .expect("Couldn't write bindings");
 }
 
