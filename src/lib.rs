@@ -16,7 +16,7 @@ mod tests {
 
     #[test]
     fn can_load_and_run_system() {
-        let filename = Path::new(env!("CARGO_MANIFEST_DIR")).join("resources/test/test.net");
+        let filename = Path::new(env!("CARGO_MANIFEST_DIR")).join("resources/test/test.elec");
         unsafe {
             acfutils_sys::crc64_init();
             acfutils_sys::crc64_srand(0);
