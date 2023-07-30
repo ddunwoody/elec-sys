@@ -105,6 +105,12 @@ fn bindgen_test_layout_vect2_s() {
 }
 #[doc = " Generic 2-space vector. On euclidian 2-space, axes are:\n x: left-to-right (increasing right)\n y: down-to-up (increasing up)\n```\n Y (incr up)\n ^\n |\n |\n |\n +------->\n         X (incr right)\n```"]
 pub type vect2_t = vect2_s;
+pub const ELEC_MAX_SRCS: _bindgen_ty_4 = _bindgen_ty_4::ELEC_MAX_SRCS;
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _bindgen_ty_4 {
+    ELEC_MAX_SRCS = 64,
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct elec_sys_s {
@@ -230,7 +236,7 @@ fn bindgen_test_layout_elec_batt_info_t() {
         )
     );
 }
-#[doc = " This is the callback type used by generators to determine the speed\n of the generator's input shaft, which is then used for determining\n the generator's output voltage and frequency behavior. This callback\n is installed for generators using libelec_gen_set_rpm_cb().\n @note A generator MUST have an rpm callback configured before the\n\tnetwork can be started using libelec_sys_start().\n @param comp The component for which the generator rpm is being queried.\n @param userinfo Custom userinfo pointer, which was previously set up\n\ton the component using libelec_comp_set_userinfo().\n @return The generator rpm, using the same units as what you have used\n\tfor the `EXC_RPM`, `MIN_RPM` and `MAX_RPM` stanzas when defining\n\tthe generator in the config file. libelec doesn't enforce any\n\tspecific type of units for generator, so you can use whatever\n\tunits are most convenient."]
+#[doc = " This is the callback type used by generators to determine the speed\n of the generator's input shaft, which is then used for determining\n the generator's output voltage and frequency behavior. This callback\n is installed for generators using libelec_gen_set_rpm_cb().\n @note You DON'T have to set a generator rpm callback. You can instead\n\tcall libelec_gen_set_rpm() regularly to set the rpm value directly.\n @param comp The component for which the generator rpm is being queried.\n @param userinfo Custom userinfo pointer, which was previously set up\n\ton the component using libelec_comp_set_userinfo().\n @return The generator rpm, using the same units as what you have used\n\tfor the `EXC_RPM`, `MIN_RPM` and `MAX_RPM` stanzas when defining\n\tthe generator in the config file. libelec doesn't enforce any\n\tspecific type of units for generator, so you can use whatever\n\tunits are most convenient.\n @see libelec_gen_set_rpm()"]
 pub type elec_get_rpm_cb_t = ::std::option::Option<
     unsafe extern "C" fn(comp: *mut elec_comp_t, userinfo: *mut ::std::os::raw::c_void) -> f64,
 >;
@@ -1184,56 +1190,51 @@ pub type elec_user_cb_t = ::std::option::Option<
     unsafe extern "C" fn(sys: *mut elec_sys_t, pre: bool, userinfo: *mut ::std::os::raw::c_void),
 >;
 extern "C" {
-    #[link_name = "\u{1}_libelec_new"]
-    pub fn new(filename: *const ::std::os::raw::c_char) -> *mut elec_sys_t;
+    pub fn libelec_new(filename: *const ::std::os::raw::c_char) -> *mut elec_sys_t;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_destroy"]
-    pub fn destroy(sys: *mut elec_sys_t);
+    pub fn libelec_destroy(sys: *mut elec_sys_t);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_get_comp_infos"]
-    pub fn get_comp_infos(sys: *const elec_sys_t, num_infos: *mut usize) -> *mut elec_comp_info_t;
+    pub fn libelec_get_comp_infos(
+        sys: *const elec_sys_t,
+        num_infos: *mut usize,
+    ) -> *const elec_comp_info_t;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_sys_start"]
-    pub fn sys_start(sys: *mut elec_sys_t) -> bool;
+    pub fn libelec_sys_start(sys: *mut elec_sys_t) -> bool;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_sys_stop"]
-    pub fn sys_stop(sys: *mut elec_sys_t);
+    pub fn libelec_sys_stop(sys: *mut elec_sys_t);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_sys_is_started"]
-    pub fn sys_is_started(sys: *const elec_sys_t) -> bool;
+    pub fn libelec_sys_is_started(sys: *const elec_sys_t) -> bool;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_sys_can_start"]
-    pub fn sys_can_start(sys: *const elec_sys_t) -> bool;
+    pub fn libelec_sys_can_start(sys: *const elec_sys_t) -> bool;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_sys_set_time_factor"]
-    pub fn sys_set_time_factor(sys: *mut elec_sys_t, time_factor: f64);
+    pub fn libelec_sys_set_time_factor(sys: *mut elec_sys_t, time_factor: f64);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_sys_get_time_factor"]
-    pub fn sys_get_time_factor(sys: *const elec_sys_t) -> f64;
+    pub fn libelec_sys_get_time_factor(sys: *const elec_sys_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_serialize"]
-    pub fn serialize(sys: *mut elec_sys_t, ser: *mut conf_t, prefix: *const ::std::os::raw::c_char);
+    pub fn libelec_serialize(
+        sys: *mut elec_sys_t,
+        ser: *mut conf_t,
+        prefix: *const ::std::os::raw::c_char,
+    );
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_deserialize"]
-    pub fn deserialize(
+    pub fn libelec_deserialize(
         sys: *mut elec_sys_t,
         ser: *const conf_t,
         prefix: *const ::std::os::raw::c_char,
     ) -> bool;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_add_user_cb"]
-    pub fn add_user_cb(
+    pub fn libelec_add_user_cb(
         sys: *mut elec_sys_t,
         pre: bool,
         cb: elec_user_cb_t,
@@ -1241,8 +1242,7 @@ extern "C" {
     );
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_remove_user_cb"]
-    pub fn remove_user_cb(
+    pub fn libelec_remove_user_cb(
         sys: *mut elec_sys_t,
         pre: bool,
         cb: elec_user_cb_t,
@@ -1250,13 +1250,13 @@ extern "C" {
     );
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_find"]
-    pub fn comp_find(sys: *mut elec_sys_t, name: *const ::std::os::raw::c_char)
-        -> *mut elec_comp_t;
+    pub fn libelec_comp_find(
+        sys: *mut elec_sys_t,
+        name: *const ::std::os::raw::c_char,
+    ) -> *mut elec_comp_t;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_walk_comps"]
-    pub fn walk_comps(
+    pub fn libelec_walk_comps(
         sys: *mut elec_sys_t,
         cb: ::std::option::Option<
             unsafe extern "C" fn(arg1: *mut elec_comp_t, arg2: *mut ::std::os::raw::c_void),
@@ -1265,184 +1265,169 @@ extern "C" {
     );
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp2info"]
-    pub fn comp2info(comp: *const elec_comp_t) -> *const elec_comp_info_t;
+    pub fn libelec_comp2info(comp: *const elec_comp_t) -> *const elec_comp_info_t;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_is_AC"]
-    pub fn comp_is_AC(comp: *const elec_comp_t) -> bool;
+    pub fn libelec_comp_is_AC(comp: *const elec_comp_t) -> bool;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_num_conns"]
-    pub fn comp_get_num_conns(comp: *const elec_comp_t) -> usize;
+    pub fn libelec_comp_get_num_conns(comp: *const elec_comp_t) -> usize;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_conn"]
-    pub fn comp_get_conn(comp: *const elec_comp_t, i: usize) -> *mut elec_comp_t;
+    pub fn libelec_comp_get_conn(comp: *const elec_comp_t, i: usize) -> *mut elec_comp_t;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_in_volts"]
-    pub fn comp_get_in_volts(comp: *const elec_comp_t) -> f64;
+    pub fn libelec_comp_get_in_volts(comp: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_out_volts"]
-    pub fn comp_get_out_volts(comp: *const elec_comp_t) -> f64;
+    pub fn libelec_comp_get_out_volts(comp: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_in_amps"]
-    pub fn comp_get_in_amps(comp: *const elec_comp_t) -> f64;
+    pub fn libelec_comp_get_in_amps(comp: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_out_amps"]
-    pub fn comp_get_out_amps(comp: *const elec_comp_t) -> f64;
+    pub fn libelec_comp_get_out_amps(comp: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_in_pwr"]
-    pub fn comp_get_in_pwr(comp: *const elec_comp_t) -> f64;
+    pub fn libelec_comp_get_in_pwr(comp: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_out_pwr"]
-    pub fn comp_get_out_pwr(comp: *const elec_comp_t) -> f64;
+    pub fn libelec_comp_get_out_pwr(comp: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_in_freq"]
-    pub fn comp_get_in_freq(comp: *const elec_comp_t) -> f64;
+    pub fn libelec_comp_get_in_freq(comp: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_out_freq"]
-    pub fn comp_get_out_freq(comp: *const elec_comp_t) -> f64;
+    pub fn libelec_comp_get_out_freq(comp: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_incap_volts"]
-    pub fn comp_get_incap_volts(comp: *const elec_comp_t) -> f64;
+    pub fn libelec_comp_get_incap_volts(comp: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_is_powered"]
-    pub fn comp_is_powered(comp: *const elec_comp_t) -> bool;
+    pub fn libelec_comp_is_powered(comp: *const elec_comp_t) -> bool;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_set_failed"]
-    pub fn comp_set_failed(comp: *mut elec_comp_t, failed: bool);
+    pub fn libelec_comp_get_eff(gen: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_failed"]
-    pub fn comp_get_failed(comp: *const elec_comp_t) -> bool;
+    pub fn libelec_comp_get_srcs(
+        comp: *const elec_comp_t,
+        srcs: *mut *mut elec_comp_t,
+    ) -> ::std::os::raw::c_uint;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_set_shorted"]
-    pub fn comp_set_shorted(comp: *mut elec_comp_t, shorted: bool);
+    pub fn libelec_comp_set_failed(comp: *mut elec_comp_t, failed: bool);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_shorted"]
-    pub fn comp_get_shorted(comp: *const elec_comp_t) -> bool;
+    pub fn libelec_comp_get_failed(comp: *const elec_comp_t) -> bool;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_gen_set_random_volts"]
-    pub fn gen_set_random_volts(comp: *mut elec_comp_t, stddev: f64) -> f64;
+    pub fn libelec_comp_set_shorted(comp: *mut elec_comp_t, shorted: bool);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_gen_set_random_freq"]
-    pub fn gen_set_random_freq(comp: *mut elec_comp_t, stddev: f64) -> f64;
+    pub fn libelec_comp_get_shorted(comp: *const elec_comp_t) -> bool;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_set_userinfo"]
-    pub fn comp_set_userinfo(comp: *mut elec_comp_t, userinfo: *mut ::std::os::raw::c_void);
+    pub fn libelec_gen_set_random_volts(comp: *mut elec_comp_t, stddev: f64) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_comp_get_userinfo"]
-    pub fn comp_get_userinfo(comp: *const elec_comp_t) -> *mut ::std::os::raw::c_void;
+    pub fn libelec_gen_set_random_freq(comp: *mut elec_comp_t, stddev: f64) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_batt_set_temp_cb"]
-    pub fn batt_set_temp_cb(batt: *mut elec_comp_t, cb: elec_get_temp_cb_t);
+    pub fn libelec_comp_set_userinfo(comp: *mut elec_comp_t, userinfo: *mut ::std::os::raw::c_void);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_batt_get_temp_cb"]
-    pub fn batt_get_temp_cb(batt: *const elec_comp_t) -> elec_get_temp_cb_t;
+    pub fn libelec_comp_get_userinfo(comp: *const elec_comp_t) -> *mut ::std::os::raw::c_void;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_gen_set_rpm_cb"]
-    pub fn gen_set_rpm_cb(gen: *mut elec_comp_t, cb: elec_get_rpm_cb_t);
+    pub fn libelec_batt_set_temp_cb(batt: *mut elec_comp_t, cb: elec_get_temp_cb_t);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_gen_get_rpm_cb"]
-    pub fn gen_get_rpm_cb(gen: *const elec_comp_t) -> elec_get_rpm_cb_t;
+    pub fn libelec_batt_get_temp_cb(batt: *const elec_comp_t) -> elec_get_temp_cb_t;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_load_set_load_cb"]
-    pub fn load_set_load_cb(load: *mut elec_comp_t, cb: elec_get_load_cb_t);
+    pub fn libelec_gen_set_rpm_cb(gen: *mut elec_comp_t, cb: elec_get_rpm_cb_t);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_load_get_load_cb"]
-    pub fn load_get_load_cb(load: *mut elec_comp_t) -> elec_get_load_cb_t;
+    pub fn libelec_gen_get_rpm_cb(gen: *const elec_comp_t) -> elec_get_rpm_cb_t;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_cb_set"]
-    pub fn cb_set(comp: *mut elec_comp_t, set: bool);
+    pub fn libelec_load_set_load_cb(load: *mut elec_comp_t, cb: elec_get_load_cb_t);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_cb_get"]
-    pub fn cb_get(comp: *const elec_comp_t) -> bool;
+    pub fn libelec_load_get_load_cb(load: *mut elec_comp_t) -> elec_get_load_cb_t;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_cb_get_temp"]
-    pub fn cb_get_temp(comp: *const elec_comp_t) -> f64;
+    pub fn libelec_cb_set(comp: *mut elec_comp_t, set: bool);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_tie_set_list"]
-    pub fn tie_set_list(comp: *mut elec_comp_t, list_len: usize, bus_list: *const *mut elec_comp_t);
+    pub fn libelec_cb_get(comp: *const elec_comp_t) -> bool;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_tie_set"]
-    pub fn tie_set(comp: *mut elec_comp_t, ...);
+    pub fn libelec_cb_get_temp(comp: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_tie_set_v"]
-    pub fn tie_set_v(comp: *mut elec_comp_t, ap: *mut __va_list_tag);
+    pub fn libelec_tie_set_list(
+        comp: *mut elec_comp_t,
+        list_len: usize,
+        bus_list: *const *mut elec_comp_t,
+    );
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_tie_set_all"]
-    pub fn tie_set_all(comp: *mut elec_comp_t, tied: bool);
+    pub fn libelec_tie_set(comp: *mut elec_comp_t, ...);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_tie_get_all"]
-    pub fn tie_get_all(comp: *mut elec_comp_t) -> bool;
+    pub fn libelec_tie_set_v(comp: *mut elec_comp_t, ap: *mut __va_list_tag);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_tie_get_list"]
-    pub fn tie_get_list(
+    pub fn libelec_tie_set_all(comp: *mut elec_comp_t, tied: bool);
+}
+extern "C" {
+    pub fn libelec_tie_get_all(comp: *mut elec_comp_t) -> bool;
+}
+extern "C" {
+    pub fn libelec_tie_get_list(
         comp: *mut elec_comp_t,
         cap: usize,
         bus_list: *mut *mut elec_comp_t,
     ) -> usize;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_tie_get_num_buses"]
-    pub fn tie_get_num_buses(comp: *const elec_comp_t) -> usize;
+    pub fn libelec_tie_get_num_buses(comp: *const elec_comp_t) -> usize;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_tie_get"]
-    pub fn tie_get(tie: *mut elec_comp_t, exhaustive: bool_t, ...) -> bool;
+    pub fn libelec_tie_get(tie: *mut elec_comp_t, exhaustive: bool_t, ...) -> bool;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_tie_get_v"]
-    pub fn tie_get_v(tie: *mut elec_comp_t, exhaustive: bool, ap: *mut __va_list_tag) -> bool;
+    pub fn libelec_tie_get_v(
+        tie: *mut elec_comp_t,
+        exhaustive: bool,
+        ap: *mut __va_list_tag,
+    ) -> bool;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_batt_get_chg_rel"]
-    pub fn batt_get_chg_rel(batt: *const elec_comp_t) -> f64;
+    pub fn libelec_gen_set_rpm(gen: *mut elec_comp_t, rpm: f64);
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_batt_set_chg_rel"]
-    pub fn batt_set_chg_rel(batt: *mut elec_comp_t, chg_rel: f64);
+    pub fn libelec_gen_get_rpm(gen: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_chgr_get_working"]
-    pub fn chgr_get_working(chgr: *const elec_comp_t) -> bool;
+    pub fn libelec_batt_get_chg_rel(batt: *const elec_comp_t) -> f64;
 }
 extern "C" {
-    #[link_name = "\u{1}_libelec_phys_get_batt_voltage"]
-    pub fn phys_get_batt_voltage(U_nominal: f64, chg_rel: f64, I_rel: f64) -> f64;
+    pub fn libelec_batt_set_chg_rel(batt: *mut elec_comp_t, chg_rel: f64);
+}
+extern "C" {
+    pub fn libelec_batt_get_temp(batt: *const elec_comp_t) -> f64;
+}
+extern "C" {
+    pub fn libelec_batt_set_temp(batt: *mut elec_comp_t, T: f64);
+}
+extern "C" {
+    pub fn libelec_chgr_get_working(chgr: *const elec_comp_t) -> bool;
+}
+extern "C" {
+    pub fn libelec_phys_get_batt_voltage(U_nominal: f64, chg_rel: f64, I_rel: f64) -> f64;
 }
 pub type __builtin_va_list = [__va_list_tag; 1usize];
 #[repr(C)]

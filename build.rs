@@ -10,10 +10,10 @@ fn main() {
 
     let elec_path = std::path::Path::new(env!("LIBELEC"));
 
-    configure(&elec_path);
+    configure(elec_path);
 
     #[cfg(feature = "generate-bindings")]
-    generate_bindings(&elec_path);
+    generate_bindings(elec_path);
 }
 
 fn configure(elec_path: &std::path::Path) {
@@ -32,12 +32,7 @@ fn generate_bindings(elec_path: &std::path::Path) {
     let xplane_sdk_path = std::path::Path::new(env!("XPLANE_SDK"));
     let acfutils_path = std::path::Path::new(env!("LIBACFUTILS"));
     let header = format!("{}/include/libelec.h", elec_path.display());
-    println!("{header}");
-
-    #[cfg(target_os = "macos")]
-    let bindings = "src/bindings.rs";
-    #[cfg(not(target_os = "macos"))]
-    let bindings = "src/bindings-lin.rs";
+    println!("cargo:rerun-if-changed={header}");
 
     bindgen::Builder::default()
         .header(&header)
@@ -45,16 +40,16 @@ fn generate_bindings(elec_path: &std::path::Path) {
             non_exhaustive: false,
         })
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-        .parse_callbacks(Box::new(LibElecCallbacks))
         .clang_args([
-            format!("-I{}/libacfutils-redist/include", acfutils_path.display()),
-            format!("-I{}/CHeaders/XPLM", xplane_sdk_path.display()),
-            format!("-D{}", get_xp_def()),
+            "-std=c99",
+            &format!("-I{}/libacfutils-redist/include", acfutils_path.display()),
+            &format!("-I{}/CHeaders/XPLM", xplane_sdk_path.display()),
+            &format!("-D{}", get_xp_def()),
         ])
         .allowlist_file(header)
         .generate()
         .expect("Unable to generate bindings")
-        .write_to_file(bindings)
+        .write_to_file("src/bindings.rs")
         .expect("Couldn't write bindings");
 }
 
@@ -83,20 +78,5 @@ fn get_xp_def() -> &'static str {
         Target::Windows => "IBM",
         Target::MacOs => "APL",
         Target::Linux => "LIN",
-    }
-}
-
-#[cfg(feature = "generate-bindings")]
-#[derive(Debug)]
-struct LibElecCallbacks;
-
-#[cfg(feature = "generate-bindings")]
-impl bindgen::callbacks::ParseCallbacks for LibElecCallbacks {
-    fn item_name(&self, original_item_name: &str) -> Option<String> {
-        if original_item_name.starts_with("libelec_") {
-            Some(original_item_name[8..].to_string())
-        } else {
-            None
-        }
     }
 }
