@@ -3,10 +3,10 @@
  *
  * All rights reserved.
  */
-
+#![deny(clippy::all)]
+#![warn(clippy::pedantic)]
 #![allow(non_upper_case_globals, non_camel_case_types, non_snake_case)]
-
-include!("bindings.rs");
+include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 #[cfg(test)]
 mod tests {
@@ -37,7 +37,10 @@ mod tests {
 
             assert!(!comp.is_null());
             let volts = crate::libelec_comp_get_out_volts(comp);
-            assert_eq!(volts, 25.4);
+            #[allow(clippy::float_cmp)]
+            {
+                assert_eq!(volts, 25.4);
+            }
 
             crate::libelec_sys_stop(sys);
             crate::libelec_destroy(sys);

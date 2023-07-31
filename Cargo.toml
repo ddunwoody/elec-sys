@@ -8,10 +8,13 @@ authors = ["David Dunwoody <david.dunwoody@gmail.com>"]
 doctest = false
 
 [features]
-generate-bindings = ["dep:bindgen"]
+datarefs = []
+xplane = []
 
 [build-dependencies]
-bindgen = { version = "0.65.1", optional = true }
+bindgen = "0.66.1"
+build-support = { path = "../build-support" }
+cc = "1.0.79"
 
 [dev-dependencies]
 acfutils-sys = { path = "../acfutils-sys" }
