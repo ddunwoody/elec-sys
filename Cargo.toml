@@ -13,8 +13,8 @@ xplane = []
 
 [build-dependencies]
 bindgen = "0.66.1"
-build-support = { path = "../build-support" }
+build-support = { git = "https://github.com/ddunwoody/build-support.git" }
 cc = "1.0.79"
 
 [dev-dependencies]
-acfutils-sys = { path = "../acfutils-sys" }
+acfutils-sys = { git = "https://github.com/ddunwoody/acfutils-sys.git" }
