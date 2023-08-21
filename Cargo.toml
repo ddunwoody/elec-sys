@@ -18,10 +18,3 @@ cc = "1.0.79"
 
 [dev-dependencies]
 acfutils-sys = { git = "https://github.com/ddunwoody/acfutils-sys.git" }
-
-[patch."https://github.com/ddunwoody/acfutils-sys.git"]
-acfutils-sys = { path = "../acfutils-sys" }
-
-[patch."https://github.com/ddunwoody/build-support"]
-build-support = { path = "../build-support" }
-
