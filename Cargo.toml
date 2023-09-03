@@ -9,7 +9,7 @@ doctest = false
 
 [features]
 datarefs = []
-xplane = []
+vis = []
 
 [build-dependencies]
 bindgen = "0.66.1"

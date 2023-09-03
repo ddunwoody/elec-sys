@@ -77,7 +77,7 @@ fn get_files(elec_path: &Path, ext: &str) -> Vec<String> {
         format!("{path}/src/libelec_drawing.{ext}"),
     ];
 
-    #[cfg(feature = "xplane")]
+    #[cfg(feature = "vis")]
     files.push(format!("{path}/src/libelec_vis.{ext}"));
 
     files
@@ -90,13 +90,12 @@ fn build(platform: Platform, acfutils_path: &Path, xplane_sdk_path: &Path, elec_
     }
     builder.files(get_files(elec_path, "c"));
 
-    #[cfg(all(feature = "xplane", feature = "datarefs"))]
+    #[cfg(not(all(feature = "datarefs", feature = "vis")))]
+    builder.define("_LACF_WITHOUT_XPLM", None);
+
+    #[cfg(feature = "datarefs")]
     builder.define("LIBELEC_WITH_DRS", "1");
 
-    #[cfg(feature = "xplane")]
-    builder.define("XPLANE", "1");
-    #[cfg(not(feature = "xplane"))]
-    builder.define("_LACF_WITHOUT_XPLM", None);
 
     builder.compile("elec");
 }
