@@ -12,9 +12,9 @@ datarefs = []
 vis = []
 
 [build-dependencies]
-bindgen = "0.66.1"
+bindgen = "0.68.1"
 build-support = { git = "https://github.com/ddunwoody/build-support.git" }
-cc = "1.0.79"
+cc = "1.0.83"
 
 [dev-dependencies]
 acfutils-sys = { git = "https://github.com/ddunwoody/acfutils-sys.git" }
