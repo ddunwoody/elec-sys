@@ -96,6 +96,7 @@ fn build(platform: Platform, acfutils_path: &Path, xplane_sdk_path: &Path, elec_
     #[cfg(feature = "datarefs")]
     builder.define("LIBELEC_WITH_DRS", "1");
 
+    builder.define("_USE_MATH_DEFINES", None);
 
     builder.compile("elec");
 }
