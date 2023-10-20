@@ -13,22 +13,22 @@ use std::path::{Path, PathBuf};
 fn main() {
     println!("cargo:rerun-if-env-changed=LIBELEC");
     println!("cargo:rerun-if-env-changed=XPLANE_SDK");
-    println!("cargo:rerun-if-env-changed=LIBACFUTILS");
+    println!("cargo:rerun-if-env-changed=LIBACFUTILS_REDIST");
 
-    let acfutils_path = Path::new(env!("LIBACFUTILS"));
+    let acfutils_redist_path = Path::new(env!("LIBACFUTILS_REDIST"));
     let xplane_sdk_path = Path::new(env!("XPLANE_SDK"));
     let elec_path = Path::new(env!("LIBELEC"));
 
     let platform = get_target_platform();
 
-    generate_bindings(platform, acfutils_path, xplane_sdk_path, elec_path);
+    generate_bindings(platform, acfutils_redist_path, xplane_sdk_path, elec_path);
 
-    build(platform, acfutils_path, xplane_sdk_path, elec_path);
+    build(platform, acfutils_redist_path, xplane_sdk_path, elec_path);
 }
 
 fn generate_bindings(
     platform: Platform,
-    acfutils_path: &Path,
+    acfutils_redist_path: &Path,
     xplane_sdk_path: &Path,
     elec_path: &Path,
 ) {
@@ -39,7 +39,7 @@ fn generate_bindings(
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .clang_args(build_support::get_acfutils_cflags(
             platform,
-            acfutils_path,
+            acfutils_redist_path,
             xplane_sdk_path,
         ))
         .blocklist_function("libelec_tie_get_v")
@@ -49,7 +49,7 @@ fn generate_bindings(
 
     let cairo_h = format!(
         "{}/{}/include/cairo.h",
-        acfutils_path.display(),
+        acfutils_redist_path.display(),
         platform.short()
     );
     builder = builder.header(&cairo_h).allowlist_file(&cairo_h);
@@ -83,9 +83,9 @@ fn get_files(elec_path: &Path, ext: &str) -> Vec<String> {
     files
 }
 
-fn build(platform: Platform, acfutils_path: &Path, xplane_sdk_path: &Path, elec_path: &Path) {
+fn build(platform: Platform, acfutils_redist_path: &Path, xplane_sdk_path: &Path, elec_path: &Path) {
     let mut builder = cc::Build::new();
-    for flag in get_acfutils_cflags(platform, acfutils_path, xplane_sdk_path) {
+    for flag in get_acfutils_cflags(platform, acfutils_redist_path, xplane_sdk_path) {
         builder.flag(&flag);
     }
     builder.files(get_files(elec_path, "c"));
